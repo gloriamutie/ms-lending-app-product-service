@@ -7,18 +7,9 @@ import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
-/**
- * Reactive repository for {@link Product} entities.
- */
 @Repository
 public interface ProductRepository extends ReactiveCrudRepository<Product, UUID> {
 
-    /**
-     * Finds all products matching the given status.
-     *
-     * @param status the product status to filter by
-     * @return a {@link Flux} emitting matching products
-     */
     Flux<Product> findByStatus(String status);
 }
 
