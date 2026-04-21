@@ -4,8 +4,6 @@ import com.glo.lending.product.model.dto.CreateProductRequest;
 import com.glo.lending.product.model.dto.ProductResponse;
 import com.glo.lending.product.model.dto.UpdateProductRequest;
 import com.glo.lending.product.model.enums.ProductStatus;
-import com.glo.lending.product.repository.entities.Product;
-import com.glo.lending.product.repository.entities.ProductFee;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

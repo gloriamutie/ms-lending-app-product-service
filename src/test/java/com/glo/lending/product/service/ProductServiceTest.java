@@ -1,17 +1,17 @@
 package com.glo.lending.product.service;
 
+import com.glo.lending.product.dblayer.entities.ProductFee;
+import com.glo.lending.product.dblayer.entities.ProductTenure;
+import com.glo.lending.product.dblayer.repo.ProductRepository;
 import com.glo.lending.product.exception.ProductNotFoundException;
 import com.glo.lending.product.model.dto.*;
 import com.glo.lending.product.model.enums.CalculationType;
 import com.glo.lending.product.model.enums.FeeType;
 import com.glo.lending.product.model.enums.ProductStatus;
 import com.glo.lending.product.model.enums.TenureType;
-import com.glo.lending.product.repository.entities.Product;
-import com.glo.lending.product.repository.entities.ProductFee;
-import com.glo.lending.product.repository.entities.ProductTenure;
-import com.glo.lending.product.repository.repo.ProductFeeRepository;
-import com.glo.lending.product.repository.repo.ProductRepository;
-import com.glo.lending.product.repository.repo.ProductTenureRepository;
+import com.glo.lending.product.dblayer.entities.Product;
+import com.glo.lending.product.dblayer.repo.ProductFeeRepository;
+import com.glo.lending.product.dblayer.repo.ProductTenureRepository;
 import com.glo.lending.product.components.ProductCache;
 import com.glo.lending.product.service.serviceImpl.ProductFeeServiceImpl;
 import com.glo.lending.product.service.serviceImpl.ProductServiceImpl;
@@ -33,7 +33,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static ch.qos.logback.core.joran.JoranConstants.NULL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

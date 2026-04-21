@@ -1,4 +1,4 @@
-package com.glo.lending.product.repository.entities;
+package com.glo.lending.product.dblayer.entities;
 
 import com.glo.lending.product.model.enums.CalculationType;
 import com.glo.lending.product.model.enums.FeeType;

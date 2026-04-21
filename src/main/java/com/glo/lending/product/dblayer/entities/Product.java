@@ -1,4 +1,4 @@
-package com.glo.lending.product.repository.entities;
+package com.glo.lending.product.dblayer.entities;
 
 import com.glo.lending.product.model.enums.ProductStatus;
 import lombok.AllArgsConstructor;

@@ -1,19 +1,18 @@
 package com.glo.lending.product.components;
 
 import com.glo.lending.product.config.CacheConfig;
-import com.glo.lending.product.repository.entities.Product;
-import com.glo.lending.product.repository.entities.ProductFee;
-import com.glo.lending.product.repository.entities.ProductTenure;
-import com.glo.lending.product.repository.repo.ProductFeeRepository;
-import com.glo.lending.product.repository.repo.ProductRepository;
-import com.glo.lending.product.repository.repo.ProductTenureRepository;
+import com.glo.lending.product.dblayer.entities.Product;
+import com.glo.lending.product.dblayer.entities.ProductFee;
+import com.glo.lending.product.dblayer.entities.ProductTenure;
+import com.glo.lending.product.dblayer.repo.ProductFeeRepository;
+import com.glo.lending.product.dblayer.repo.ProductRepository;
+import com.glo.lending.product.dblayer.repo.ProductTenureRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

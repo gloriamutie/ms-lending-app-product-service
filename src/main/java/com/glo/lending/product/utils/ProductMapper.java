@@ -1,9 +1,9 @@
 package com.glo.lending.product.utils;
 
+import com.glo.lending.product.dblayer.entities.Product;
+import com.glo.lending.product.dblayer.entities.ProductFee;
+import com.glo.lending.product.dblayer.entities.ProductTenure;
 import com.glo.lending.product.model.dto.*;
-import com.glo.lending.product.repository.entities.Product;
-import com.glo.lending.product.repository.entities.ProductFee;
-import com.glo.lending.product.repository.entities.ProductTenure;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,8 +19,7 @@ public final class ProductMapper {
     }
 
 
-
-    public static Product toEntity( CreateProductRequest request) {
+    public static Product toEntity(CreateProductRequest request) {
 
         return Product.builder()
                 .name(request.getName())
@@ -35,7 +34,7 @@ public final class ProductMapper {
     }
 
 
-    public static ProductFee toEntity( FeeRequest request, UUID productId) {
+    public static ProductFee toEntity(FeeRequest request, UUID productId) {
         return ProductFee.builder()
                 .productId(productId)
                 .feeType(request.getFeeType())
