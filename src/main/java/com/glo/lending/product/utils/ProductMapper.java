@@ -11,7 +11,6 @@ import java.util.UUID;
 
 /**
  * Maps between Product domain entities and DTOs.
- * Stateless utility — all methods are static.
  */
 public final class ProductMapper {
 
