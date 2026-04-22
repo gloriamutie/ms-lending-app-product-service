@@ -1,5 +1,7 @@
 package com.glo.lending.product.exception;
 
+import com.glo.lending.product.model.dto.ApiResponse;
+import com.glo.lending.product.service.serviceImpl.ProductFeeServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -60,6 +62,20 @@ public class GlobalExceptionHandler {
         error.put("error", status.getReasonPhrase());
         error.put("message", message);
         return error;
+    }
+
+    @ExceptionHandler(ProductFeeServiceImpl.DuplicateFeeException.class)
+    public Mono<ResponseEntity<ApiResponse<Void>>> handleDuplicateFee(ProductFeeServiceImpl.DuplicateFeeException ex) {
+
+        return Mono.just(
+                ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new ApiResponse<>(
+                                409,
+                                ex.getMessage(),
+                                null,
+                                LocalDateTime.now()
+                        ))
+        );
     }
 }
 

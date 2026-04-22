@@ -132,11 +132,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(productId)))
                 .flatMap(product ->
-                        productFeeRepository.findByProductId(productId).collectList()
-                                .flatMap(fees -> productFeeRepository.deleteAll(fees))
-                                .then(productTenureRepository.findByProductId(productId).collectList())
-                                .flatMap(tenures -> productTenureRepository.deleteAll(tenures))
-                                .then(productRepository.delete(product))
+                        Mono.when(
+                                        productFeeRepository.deleteProductFeeByProductId(productId),
+                                        productTenureRepository.deleteProductTenureByProductId(productId)
+                                )
+                                .then(productRepository.deleteById(productId))
                 )
                 .doOnSuccess(v -> {
                     cacheService.evictProduct(productId);

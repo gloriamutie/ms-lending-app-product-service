@@ -4,6 +4,7 @@ import com.glo.lending.product.dblayer.entities.ProductTenure;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -11,5 +12,7 @@ import java.util.UUID;
 @Repository
 public interface ProductTenureRepository extends ReactiveCrudRepository<ProductTenure, UUID> {
     Flux<ProductTenure> findByProductId(UUID productId);
+
+    Mono<ProductTenure> deleteProductTenureByProductId(UUID productId);
 }
 

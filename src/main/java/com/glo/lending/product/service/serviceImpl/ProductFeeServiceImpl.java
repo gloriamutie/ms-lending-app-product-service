@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProductFeeServiceImpl implements ProductFeeService {
-    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ProductFeeServiceImpl.class);
 
     private final ProductRepository productRepository;
     private final ProductFeeRepository productFeeRepository;
@@ -27,25 +27,62 @@ public class ProductFeeServiceImpl implements ProductFeeService {
 
     //Adds a fee to an existing product.
     @Override
-    public Mono<FeeResponse> addFee(final UUID productId,  FeeRequest request) {
+    public Mono<FeeResponse> addFee(final UUID productId, FeeRequest request) {
         log.info("Adding fee to product {}: type={}", productId, request.getFeeType());
 
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(productId)))
-                .flatMap(p -> productFeeRepository.save(ProductMapper.toEntity(request, productId)))
+
+                .flatMap(p ->
+                        productFeeRepository.existsByProductIdAndFeeType(productId, request.getFeeType())
+                                .flatMap(exists -> {
+                                    if (exists) {
+                                        return Mono.error(new DuplicateFeeException(
+                                                "Fee type already exists for this product"
+                                        ));
+                                    }
+
+                                    return productFeeRepository.save(
+                                            ProductMapper.toEntity(request, productId)
+                                    );
+                                })
+                )
+
                 .map(ProductMapper::toFeeResponse)
-                .doOnSuccess(fee -> {
-                    cacheService.evictProduct(productId);
-                    log.info("Fee added: productId={}, feeId={}", productId, fee.id());
-                });
+
+                .flatMap(fee ->
+                        Mono.fromRunnable(() -> cacheService.evictProduct(productId))
+                                .onErrorResume(e -> {
+                                    log.error("Cache eviction failed", e);
+                                    return Mono.empty();
+                                })
+                                .thenReturn(fee)
+                );
     }
 
+    //TODO handle reponse headers body is emptuy
     //Removes a fee from a product.
     @Override
-    public Mono<Void> removeFee(final UUID productId,  UUID feeId) {
+    public Mono<Void> removeFee(final UUID productId, final UUID feeId) {
         log.info("Removing fee {} from product {}", feeId, productId);
 
         return productFeeRepository.deleteById(feeId)
-                .doOnSuccess(v -> cacheService.evictProduct(productId));
+                .then(
+                        Mono.fromRunnable(() -> cacheService.evictProduct(productId))
+                                .onErrorResume(e -> {
+                                    log.error("Cache eviction failed", e);
+                                    return Mono.empty();
+                                })
+                )
+                .then();
     }
+
+    public class DuplicateFeeException extends RuntimeException {
+        public DuplicateFeeException(String message) {
+            super(message);
+        }
+    }
+
+
+
 }

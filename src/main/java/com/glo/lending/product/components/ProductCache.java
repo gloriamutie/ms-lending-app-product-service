@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -70,14 +71,18 @@ public class ProductCache {
                 .flatMapMany(Flux::fromIterable);
     }
 
+
     @SuppressWarnings("unchecked")
-    public Flux<ProductTenure> getTenuresByProductId(final UUID productId) {
-        final Cache cache = cacheManager.getCache(CacheConfig.CACHE_PRODUCT_TENURES);
+    public Flux<ProductTenure> getTenuresByProductId(UUID productId) {
+
+        Cache cache = cacheManager.getCache(CacheConfig.CACHE_PRODUCT_TENURES);
+
         if (cache != null) {
-            final Cache.ValueWrapper wrapper = cache.get(productId);
-            if (wrapper != null) {
+            List<ProductTenure> cachedProductTenure = cache.get(productId, List.class);
+
+            if (cachedProductTenure != null) {
                 log.debug("Product tenures returned from cache: {}", productId);
-                return Flux.fromIterable((List<ProductTenure>) wrapper.get());
+                return Flux.fromIterable(cachedProductTenure);
             }
         }
         log.debug("No product tenures cached: {}", productId);
@@ -94,16 +99,16 @@ public class ProductCache {
 
  //Evicts all cache entries for a specific product.
  // Called after any update to product, fees, or tenures to ensure cache consistency.
-    public void evictProduct(final UUID productId) {
+    public void evictProduct( UUID productId) {
         log.info("Evicting cache entries for product: {}", productId);
         evictFromCache(CacheConfig.CACHE_PRODUCTS, productId);
         evictFromCache(CacheConfig.CACHE_PRODUCT_FEES, productId);
         evictFromCache(CacheConfig.CACHE_PRODUCT_TENURES, productId);
     }
 
-    /**
-     * Evicts all entries from all product caches (e.g., after bulk updates).
-     */
+
+     // Evicts all entries from all product caches
+
     public void evictAll() {
         log.info("Evicting all product cache entries");
         clearCache(CacheConfig.CACHE_PRODUCTS);
@@ -111,14 +116,14 @@ public class ProductCache {
         clearCache(CacheConfig.CACHE_PRODUCT_TENURES);
     }
 
-    private void evictFromCache(final String cacheName, final UUID key) {
+    private void evictFromCache( String cacheName,  UUID key) {
         final Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {
             cache.evict(key);
         }
     }
 
-    private void clearCache(final String cacheName) {
+    private void clearCache( String cacheName) {
         final Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {
             cache.clear();

@@ -3,11 +3,11 @@
 -- Flyway migration — auto-creates tables on startup
 -- =====================================================
 --   this an extension required for generating UUIDs in PostgreSQL
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Loan Products table
 CREATE TABLE IF NOT EXISTS products (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(100)   NOT NULL,
     description     VARCHAR(500),
     min_amount      NUMERIC(15,2)  NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS products (
 
 -- Product Tenure Options
 CREATE TABLE IF NOT EXISTS product_tenures (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     product_id      UUID           NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     tenure_value    INT            NOT NULL,
     tenure_type     VARCHAR(10)    NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS product_tenures (
 
 -- Product Fee Configurations
 CREATE TABLE IF NOT EXISTS product_fees (
-    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     product_id              UUID           NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     fee_type                VARCHAR(20)    NOT NULL,
     calculation_type        VARCHAR(20)    NOT NULL,

@@ -274,11 +274,9 @@ class ProductServiceTest {
         void deleteProduct_Exists_DeletesAll() {
             // Given
             when(productRepository.findById(productId)).thenReturn(Mono.just(product));
-            when(productFeeRepository.findByProductId(productId)).thenReturn(Flux.empty());
-            when(productFeeRepository.deleteAll(any(Iterable.class))).thenReturn(Mono.empty());
-            when(productTenureRepository.findByProductId(productId)).thenReturn(Flux.empty());
-            when(productTenureRepository.deleteAll(any(Iterable.class))).thenReturn(Mono.empty());
-            when(productRepository.delete(product)).thenReturn(Mono.empty());
+            when(productFeeRepository.deleteProductFeeByProductId(productId)).thenReturn(Mono.empty());
+            when(productTenureRepository.deleteProductTenureByProductId(productId)).thenReturn(Mono.empty());
+            when(productRepository.deleteById(productId)).thenReturn(Mono.empty());
 
             // When & Then
             StepVerifier.create(productService.deleteProduct(productId))
@@ -319,6 +317,7 @@ class ProductServiceTest {
 
 
             when(productRepository.findById(productId)).thenReturn(Mono.just(product));
+            when(productFeeRepository.existsByProductIdAndFeeType(productId, FeeType.LATE_FEE)).thenReturn(Mono.just(false));
             when(productFeeRepository.save(any(ProductFee.class))).thenReturn(Mono.just(fee));
 
             // When & Then
