@@ -60,7 +60,7 @@ public class ProductFeeServiceImpl implements ProductFeeService {
                 );
     }
 
-    //TODO handle reponse headers body is emptuy
+    //TODO handle reponse headers body is emptu
     //Removes a fee from a product.
     @Override
     public Mono<Void> removeFee(final UUID productId, final UUID feeId) {
