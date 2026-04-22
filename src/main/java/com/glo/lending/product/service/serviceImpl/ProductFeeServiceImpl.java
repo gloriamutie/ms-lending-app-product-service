@@ -29,10 +29,8 @@ public class ProductFeeServiceImpl implements ProductFeeService {
     @Override
     public Mono<FeeResponse> addFee(final UUID productId, FeeRequest request) {
         log.info("Adding fee to product {}: type={}", productId, request.getFeeType());
-
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(productId)))
-
                 .flatMap(p ->
                         productFeeRepository.existsByProductIdAndFeeType(productId, request.getFeeType())
                                 .flatMap(exists -> {
@@ -41,22 +39,15 @@ public class ProductFeeServiceImpl implements ProductFeeService {
                                                 "Fee type already exists for this product"
                                         ));
                                     }
-
-                                    return productFeeRepository.save(
-                                            ProductMapper.toEntity(request, productId)
-                                    );
+                                    return productFeeRepository.save(ProductMapper.toEntity(request, productId));
                                 })
                 )
-
                 .map(ProductMapper::toFeeResponse)
-
-                .flatMap(fee ->
-                        Mono.fromRunnable(() -> cacheService.evictProduct(productId))
+                .flatMap(fee -> Mono.fromRunnable(() -> cacheService.evictProduct(productId))
                                 .onErrorResume(e -> {
                                     log.error("Cache eviction failed", e);
                                     return Mono.empty();
-                                })
-                                .thenReturn(fee)
+                                }).thenReturn(fee)
                 );
     }
 
